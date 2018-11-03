@@ -1,7 +1,9 @@
 #include <Wire.h>
 #include "Adafruit_TCS34725.h"
+#include <ros.h>
+#include <std_msgs/ColorRGBA.h>
 
-/* Example code for the Adafruit TCS34725 breakout library */
+/* Code for the Adafruit TCS34725 RGB sensor to publish messages in ROS using ros_serial*/
 
 /* Connect SCL    to analog 5
    Connect SDA    to analog 4
@@ -14,6 +16,13 @@
 /* Initialise with specific int time and gain values */
 Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_700MS, TCS34725_GAIN_1X);
 
+/* Setup the node and the publisher */
+
+std_msgs::ColorRGBA color_temp;
+ros::Publisher pub_color("color", &color_temp);
+ros::NodeHandle nh;
+
+
 void setup(void) {
   Serial.begin(9600);
   
@@ -23,6 +32,9 @@ void setup(void) {
     Serial.println("No TCS34725 found ... check your connections");
     while (1);
   }
+
+  nh.initNode();
+  nh.advertise(pub_color);
   
   // Now we're ready to get readings!
 }
@@ -34,6 +46,7 @@ void loop(void) {
   colorTemp = tcs.calculateColorTemperature(r, g, b);
   lux = tcs.calculateLux(r, g, b);
   
+  /*
   Serial.print("Color Temp: "); Serial.print(colorTemp, DEC); Serial.print(" K - ");
   Serial.print("Lux: "); Serial.print(lux, DEC); Serial.print(" - ");
   Serial.print("R: "); Serial.print(r, DEC); Serial.print(" ");
@@ -41,4 +54,13 @@ void loop(void) {
   Serial.print("B: "); Serial.print(b, DEC); Serial.print(" ");
   Serial.print("C: "); Serial.print(c, DEC); Serial.print(" ");
   Serial.println(" ");
+  */
+
+  color_temp.r=(float)r;
+  color_temp.g=(float)g;
+  color_temp.b=(float)b;
+  color_temp.a=0.0;
+
+  pub_color.publish(&color_temp);
+  nh.spinOnce();
 }
