@@ -1,6 +1,12 @@
 #!/usr/bin/env python
+
+"""Node that subscribes to /color topic and prints out the data.
+Same functionality as "rostopic echo /color"
+"""
+
 import rospy
 from std_msgs.msg import ColorRGBA
+
 
 def callback(data):
     
