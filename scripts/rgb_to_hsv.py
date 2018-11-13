@@ -9,24 +9,24 @@ import colorsys
 from std_msgs.msg import ColorRGBA
 from sensor_fusion.msg import ColorHSV
 
-hsv = ColorHSV()
+hsv_pub = rospy.Publisher('colorHSV', ColorHSV, queue_size=10)
 
 def callback(data):
     
+    hsv = ColorHSV()
     temp_hsv = colorsys.rgb_to_hsv(data.r/65535, data.g/65535, data.b/65535)
     hsv.hue = temp_hsv[0]*360 # transform into degrees
     hsv.saturation = temp_hsv[1]
     hsv.value = temp_hsv[2]
+    hsv_pub.publish(hsv)
     
 def convert():
 
     rospy.init_node('rgb_to_hsv', anonymous=True)
-    hsv_pub = rospy.Publisher('colorHSV', ColorHSV, queue_size=10)
-    rate = rospy.Rate(10)
+    rate = rospy.Rate(1)
+    rospy.Subscriber("color", ColorRGBA, callback)
     
     while not rospy.is_shutdown():
-        rospy.Subscriber("color", ColorRGBA, callback)
-        hsv_pub.publish(hsv)
         rate.sleep()   
 
 if __name__ == '__main__':
