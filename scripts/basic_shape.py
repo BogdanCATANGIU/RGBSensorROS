@@ -29,10 +29,10 @@ def callback(data):
     marker.color.a = 1 # alpha set to 1 to increase visibility of the marker
 
 def basic_shape():
-
-    marker_pub = rospy.Publisher('visualization_marker', Marker, queue_size=10)
+    
     rospy.init_node('basic_shape', anonymous=True)
-    rate = rospy.Rate(10)
+    marker_pub = rospy.Publisher('visualization_marker', Marker, queue_size=10)
+    rate = rospy.Rate(1.5)
 
     while not rospy.is_shutdown():
         
