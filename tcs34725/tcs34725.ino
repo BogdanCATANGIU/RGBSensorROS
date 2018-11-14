@@ -11,10 +11,10 @@
    Connect GROUND to common ground */
    
 /* Initialise with default values (int time = 2.4ms, gain = 1x) */
- //Adafruit_TCS34725 tcs = Adafruit_TCS34725();
+ Adafruit_TCS34725 tcs = Adafruit_TCS34725();
 
 /* Initialise with specific int time and gain values */
-Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_700MS, TCS34725_GAIN_1X);
+//Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_700MS, TCS34725_GAIN_1X);
 
 
 /* Setup the node and the publisher */
@@ -25,7 +25,6 @@ ros::NodeHandle nh;
 
 
 void setup(void) {
-  Serial.begin(9600);
   nh.initNode();
   nh.advertise(pub_color);
   
@@ -43,7 +42,7 @@ void loop(void) {
   color_temp.g=(float)g;
   color_temp.b=(float)b;
   color_temp.a=0.0;
-
+  
   pub_color.publish(&color_temp);
   nh.spinOnce();
 }
